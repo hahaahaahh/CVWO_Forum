@@ -2,6 +2,7 @@ package main
 
 import (
 	"cvwo-forum/internal/database"
+	"cvwo-forum/internal/router"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,14 +17,12 @@ func main() {
 	defer db.Close()
 	fmt.Println("Database connected and schema loaded successfully")
 
-	// Basic route
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "CVWO Forum Backend is Running!")
-	})
+	// Setup Router
+	mux := router.SetupRouter(db)
 
 	// Start server
-	fmt.Println("Server starting on :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	log.Println("Server starting on :8080")
+	if err := http.ListenAndServe(":8080", mux); err != nil {
 		log.Fatal(err)
 	}
 }
