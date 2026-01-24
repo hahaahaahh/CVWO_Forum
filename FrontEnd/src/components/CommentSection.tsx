@@ -74,9 +74,11 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
                     <Paper key={comment.id} variant="outlined" sx={{ mb: 1, p: 1, backgroundColor: '#f9f9f9' }}>
                         <ListItem alignItems="flex-start" sx={{ px: 1, py: 0 }}
                             secondaryAction={
+                                user === comment.username && (
                                 <IconButton edge="end" aria-label="delete" size="small" onClick={() => handleDelete(comment.id)}>
                                     <DeleteIcon fontSize="inherit" />
                                 </IconButton>
+                                )
                             }
                         >
                             <ListItemText

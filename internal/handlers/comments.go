@@ -3,6 +3,7 @@ package handlers
 import (
 	"cvwo-forum/internal/database"
 	"cvwo-forum/internal/models"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -60,6 +61,22 @@ func (h *Handler) DeleteComment(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid comment ID", http.StatusBadRequest)
+		return
+	}
+
+	requestUser := r.Header.Get("X-Username")
+	commentAuthor, err := database.GetCommentAuthor(h.db, id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Comment not found", http.StatusNotFound)
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	if commentAuthor != requestUser {
+		http.Error(w, "You are not allowed to delete this comment", http.StatusForbidden)
 		return
 	}
 

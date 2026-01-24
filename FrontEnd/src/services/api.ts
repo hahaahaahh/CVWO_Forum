@@ -4,6 +4,14 @@ const api = axios.create({
   baseURL: "http://localhost:8080",
 });
 
+api.interceptors.request.use((config) => {
+  const user = localStorage.getItem("user");
+  if (user) {
+    config.headers["X-Username"] = user;
+  }
+  return config;
+});
+
 export interface Topic {
   id: number;
   title: string;
@@ -18,13 +26,25 @@ export interface Post {
   created_at: string;
 }
 
-export const getTopics = async (): Promise<Topic[]> => {
-  const response = await api.get<Topic[]>('/topics');
+export const getTopics = async (search?: string): Promise<Topic[]> => {
+  const response = await api.get<Topic[]>('/topics', {
+    params: { q: search }
+  });
   return response.data;
 };
 
-export const getPosts = async (topicId: string): Promise<Post[]> => {
-  const response = await api.get<Post[]>(`/topics/${topicId}/posts`);
+export const createTopic = async (title: string): Promise<void> => {
+  await api.post('/topics', { title });
+};
+
+export const deleteTopic = async (id: number): Promise<void> => {
+  await api.delete(`/topics/${id}`);
+};
+
+export const getPosts = async (topicId: string, search?: string): Promise<Post[]> => {
+  const response = await api.get<Post[]>(`/topics/${topicId}/posts`, {
+    params: { q: search }
+  });
   return response.data;
 };
 

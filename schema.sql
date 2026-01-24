@@ -22,10 +22,3 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
 
--- Seed default topics
-INSERT INTO topics (title) VALUES ('Tech');
-INSERT INTO topics (title) VALUES ('Games');
-INSERT INTO topics (title) VALUES ('Lifestyle');
-INSERT INTO topics (title) VALUES ('Music');
-INSERT INTO topics (title) VALUES ('Automotive');
-INSERT INTO topics (title) VALUES ('Culture');

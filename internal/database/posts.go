@@ -5,9 +5,19 @@ import (
 	"database/sql"
 )
 
-func GetPostsByTopic(db *sql.DB, topicID int) ([]models.Post, error) {
-	query := "SELECT id, title, body, username, topic_id, created_at FROM posts WHERE topic_id = ? ORDER BY created_at DESC"
-	rows, err := db.Query(query, topicID)
+func GetPostsByTopic(db *sql.DB, topicID int, searchQuery string) ([]models.Post, error) {
+	var rows *sql.Rows
+	var err error
+
+	if searchQuery == "" {
+		query := "SELECT id, title, body, username, topic_id, created_at FROM posts WHERE topic_id = ? ORDER BY created_at DESC"
+		rows, err = db.Query(query, topicID)
+	} else {
+		query := "SELECT id, title, body, username, topic_id, created_at FROM posts WHERE topic_id = ? AND (title LIKE ? OR body LIKE ?) ORDER BY created_at DESC"
+		searchTerm := "%" + searchQuery + "%"
+		rows, err = db.Query(query, topicID, searchTerm, searchTerm)
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -42,6 +52,16 @@ func CreatePost(db *sql.DB, post models.Post) (int64, error) {
 	}
 
 	return id, nil
+}
+
+func GetPostAuthor(db *sql.DB, id int) (string, error) {
+	var username string
+	query := "SELECT username FROM posts WHERE id = ?"
+	err := db.QueryRow(query, id).Scan(&username)
+	if err != nil {
+		return "", err
+	}
+	return username, nil
 }
 
 func DeletePost(db *sql.DB, id int) error {

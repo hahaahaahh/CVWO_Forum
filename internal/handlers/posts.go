@@ -3,6 +3,7 @@ package handlers
 import (
 	"cvwo-forum/internal/database"
 	"cvwo-forum/internal/models"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -16,7 +17,9 @@ func (h *Handler) ListPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := database.GetPostsByTopic(h.db, topicID)
+	searchQuery := r.URL.Query().Get("q")
+
+	posts, err := database.GetPostsByTopic(h.db, topicID, searchQuery)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -82,6 +85,22 @@ func (h *Handler) DeletePost(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid post ID", http.StatusBadRequest)
+		return
+	}
+
+	requestUser := r.Header.Get("X-Username")
+	postAuthor, err := database.GetPostAuthor(h.db, id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Post not found", http.StatusNotFound)
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	if postAuthor != requestUser {
+		http.Error(w, "You are not allowed to delete this post", http.StatusForbidden)
 		return
 	}
 

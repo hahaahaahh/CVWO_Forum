@@ -44,6 +44,16 @@ func CreateComment(db *sql.DB, comment models.Comment) (int64, error) {
 	return id, nil
 }
 
+func GetCommentAuthor(db *sql.DB, id int) (string, error) {
+	var username string
+	query := "SELECT username FROM comments WHERE id = ?"
+	err := db.QueryRow(query, id).Scan(&username)
+	if err != nil {
+		return "", err
+	}
+	return username, nil
+}
+
 func DeleteComment(db *sql.DB, id int) error {
 	query := "DELETE FROM comments WHERE id = ?"
 	_, err := db.Exec(query, id)

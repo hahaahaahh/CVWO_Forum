@@ -41,7 +41,7 @@ function App() {
         <CssBaseline />
         <Box sx={{ flexGrow: 1 }}>
           <NavBar />
-          <Container>
+          <Container maxWidth="xl" sx={{ mt: 4 }}>
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/" element={<RequireAuth><TopicList /></RequireAuth>} />
