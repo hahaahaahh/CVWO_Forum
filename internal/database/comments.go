@@ -43,3 +43,9 @@ func CreateComment(db *sql.DB, comment models.Comment) (int64, error) {
 
 	return id, nil
 }
+
+func DeleteComment(db *sql.DB, id int) error {
+	query := "DELETE FROM comments WHERE id = ?"
+	_, err := db.Exec(query, id)
+	return err
+}

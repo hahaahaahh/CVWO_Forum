@@ -43,3 +43,15 @@ func CreatePost(db *sql.DB, post models.Post) (int64, error) {
 
 	return id, nil
 }
+
+func DeletePost(db *sql.DB, id int) error {
+	query := "DELETE FROM posts WHERE id = ?"
+	_, err := db.Exec(query, id)
+	return err
+}
+
+func UpdatePost(db *sql.DB, id int, title string, body string) error {
+	query := "UPDATE posts SET title = ?, body = ? WHERE id = ?"
+	_, err := db.Exec(query, title, body, id)
+	return err
+}

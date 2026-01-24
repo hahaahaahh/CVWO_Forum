@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CssBaseline, AppBar, Toolbar, Typography, Container, Box } from '@mui/material';
 import TopicList from './components/TopicList';
 import PostList from './components/PostList';
+import PostDetail from './components/PostDetail';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Routes>
             <Route path="/" element={<TopicList />} />
             <Route path="/topics/:id" element={<PostList />} />
+            <Route path="/posts/:id" element={<PostDetail />} />
           </Routes>
         </Container>
       </Box>

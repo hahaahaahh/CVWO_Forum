@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import { Container, Card, CardContent, Typography, Stack, Box } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Container, Card, CardContent, Typography, Stack, Box, CardActionArea } from '@mui/material';
 import { getPosts, type Post } from '../services/api';
 import CreatePostForm from './CreatePostForm';
 
 const PostList = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,19 +47,21 @@ const PostList = () => {
           {posts.length > 0 ? (
             posts.map((post) => (
               <Card key={post.id} variant="outlined">
-                <CardContent>
-                  <Typography variant="h5" component="div" gutterBottom>
-                    {post.title}
-                  </Typography>
-                  <Typography variant="body1" color="text.primary" paragraph>
-                    {post.body}
-                  </Typography>
-                  <Box sx={{ mt: 1 }}>
-                    <Typography variant="caption" color="text.secondary">
-                        Posted by {post.username}
+                <CardActionArea onClick={() => navigate(`/posts/${post.id}`, { state: { post } })}>
+                  <CardContent>
+                    <Typography variant="h5" component="div" gutterBottom>
+                      {post.title}
                     </Typography>
-                  </Box>
-                </CardContent>
+                    <Typography variant="body1" color="text.primary" paragraph>
+                      {post.body}
+                    </Typography>
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="caption" color="text.secondary">
+                          Posted by {post.username}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
               </Card>
             ))
           ) : (
