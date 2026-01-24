@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Box, Typography, List, ListItem, ListItemText, TextField, Button, Divider, Paper, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getComments, createComment, deleteComment, type Comment } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 interface CommentSectionProps {
   postId: string;
@@ -10,7 +11,7 @@ interface CommentSectionProps {
 const CommentSection = ({ postId }: CommentSectionProps) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [username, setUsername] = useState('');
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
 
   const fetchComments = useCallback(async () => {
@@ -31,12 +32,11 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment || !username) return;
+    if (!newComment || !user) return;
 
     try {
-      await createComment(postId, { body: newComment, username });
+      await createComment(postId, { body: newComment, username: user });
       setNewComment('');
-      setUsername('');
       fetchComments();
     } catch (error) {
       console.error("Failed to post comment:", error);
@@ -99,15 +99,6 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
       )}
 
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <TextField
-          label="Username"
-          variant="outlined"
-          size="small"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          fullWidth
-        />
         <TextField
           label="Add a comment..."
           variant="outlined"

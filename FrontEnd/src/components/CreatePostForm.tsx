@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Box, TextField, Button, Stack, Typography } from '@mui/material';
 import { createPost } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 interface CreatePostFormProps {
   topicId: string;
@@ -10,21 +11,20 @@ interface CreatePostFormProps {
 const CreatePostForm = ({ topicId, onPostCreated }: CreatePostFormProps) => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  const [username, setUsername] = useState('');
+  const { user } = useAuth();
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !body || !username) {
+    if (!title || !body || !user) {
         setError('All fields are required');
         return;
     }
 
     try {
-      await createPost(topicId, { title, body, username });
+      await createPost(topicId, { title, body, username: user });
       setTitle('');
       setBody('');
-      setUsername('');
       setError('');
       onPostCreated();
     } catch (err) {
@@ -37,13 +37,6 @@ const CreatePostForm = ({ topicId, onPostCreated }: CreatePostFormProps) => {
     <Box component="form" onSubmit={handleSubmit} sx={{ mb: 4, p: 3, border: '1px solid #ddd', borderRadius: 2, backgroundColor: '#fff' }}>
       <Typography variant="h6" gutterBottom>Create New Post</Typography>
       <Stack spacing={2}>
-        <TextField
-          label="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          fullWidth
-          required
-        />
         <TextField
           label="Title"
           value={title}
