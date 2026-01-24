@@ -3,8 +3,9 @@ package models
 import "time"
 
 type Topic struct {
-	ID    int    `json:"id"`
-	Title string `json:"title"`
+	ID       int    `json:"id"`
+	Title    string `json:"title"`
+	Username string `json:"username"`
 }
 
 type Post struct {

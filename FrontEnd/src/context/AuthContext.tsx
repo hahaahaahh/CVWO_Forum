@@ -1,8 +1,9 @@
 import { createContext, useState, useContext, type ReactNode } from 'react';
+import { login as apiLogin } from '../services/api';
 
 interface AuthContextType {
   user: string | null;
-  login: (username: string) => void;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -13,7 +14,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return localStorage.getItem("user");
   });
 
-  const login = (username: string) => {
+  const login = async (username: string, password: string) => {
+    await apiLogin(username, password);
     setUser(username);
     localStorage.setItem("user", username);
   };

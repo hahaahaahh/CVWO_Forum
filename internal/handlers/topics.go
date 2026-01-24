@@ -45,7 +45,8 @@ func (h *Handler) CreateTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := database.CreateTopic(h.db, topic.Title)
+	username := r.Header.Get("X-Username")
+	id, err := database.CreateTopic(h.db, topic.Title, username)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -61,6 +62,22 @@ func (h *Handler) DeleteTopic(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid topic ID", http.StatusBadRequest)
+		return
+	}
+
+	requestUser := r.Header.Get("X-Username")
+	topicOwner, err := database.GetTopicAuthor(h.db, id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Topic not found", http.StatusNotFound)
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	if topicOwner != requestUser {
+		http.Error(w, "Forbidden", http.StatusForbidden)
 		return
 	}
 

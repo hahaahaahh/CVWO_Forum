@@ -21,7 +21,7 @@ const NavBar = () => {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Gossip with Go
+              CVWO Web Forum
             </Typography>
             {user && (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

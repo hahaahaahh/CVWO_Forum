@@ -15,6 +15,7 @@ api.interceptors.request.use((config) => {
 export interface Topic {
   id: number;
   title: string;
+  username: string;
 }
 
 export interface Post {
@@ -79,6 +80,14 @@ export const createComment = async (postId: string, comment: {body: string, user
 
 export const deleteComment = async (id: number): Promise<void> => {
   await api.delete(`/comments/${id}`);
+};
+
+export const signup = async (username: string, password: string): Promise<void> => {
+  await api.post('/signup', { username, password });
+};
+
+export const login = async (username: string, password: string): Promise<void> => {
+  await api.post('/login', { username, password });
 };
 
 export default api;

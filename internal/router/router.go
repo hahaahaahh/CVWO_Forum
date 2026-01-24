@@ -22,6 +22,9 @@ func SetupRouter(db *sql.DB) http.Handler {
 	mux.HandleFunc("POST /posts/{id}/comments", h.CreateComment)
 	mux.HandleFunc("DELETE /comments/{id}", h.DeleteComment)
 
+	mux.HandleFunc("POST /signup", h.Signup)
+	mux.HandleFunc("POST /login", h.Login)
+
 	return enableCORS(mux)
 }
 

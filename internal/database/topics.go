@@ -10,9 +10,9 @@ func GetTopics(db *sql.DB, term string) ([]models.Topic, error) {
 	var err error
 
 	if term == "" {
-		rows, err = db.Query("SELECT id, title FROM topics")
+		rows, err = db.Query("SELECT id, title, username FROM topics")
 	} else {
-		rows, err = db.Query("SELECT id, title FROM topics WHERE title LIKE ?", "%"+term+"%")
+		rows, err = db.Query("SELECT id, title, username FROM topics WHERE title LIKE ?", "%"+term+"%")
 	}
 
 	if err != nil {
@@ -23,7 +23,7 @@ func GetTopics(db *sql.DB, term string) ([]models.Topic, error) {
 	var topics []models.Topic
 	for rows.Next() {
 		var t models.Topic
-		if err := rows.Scan(&t.ID, &t.Title); err != nil {
+		if err := rows.Scan(&t.ID, &t.Title, &t.Username); err != nil {
 			return nil, err
 		}
 		topics = append(topics, t)
@@ -36,9 +36,9 @@ func GetTopics(db *sql.DB, term string) ([]models.Topic, error) {
 	return topics, nil
 }
 
-func CreateTopic(db *sql.DB, title string) (int64, error) {
-	query := "INSERT INTO topics (title) VALUES (?)"
-	result, err := db.Exec(query, title)
+func CreateTopic(db *sql.DB, title string, username string) (int64, error) {
+	query := "INSERT INTO topics (title, username) VALUES (?, ?)"
+	result, err := db.Exec(query, title, username)
 	if err != nil {
 		return 0, err
 	}
@@ -49,6 +49,16 @@ func CreateTopic(db *sql.DB, title string) (int64, error) {
 	}
 
 	return id, nil
+}
+
+func GetTopicAuthor(db *sql.DB, id int) (string, error) {
+	var username string
+	query := "SELECT username FROM topics WHERE id = ?"
+	err := db.QueryRow(query, id).Scan(&username)
+	if err != nil {
+		return "", err
+	}
+	return username, nil
 }
 
 func DeleteTopic(db *sql.DB, id int) error {
@@ -65,7 +75,7 @@ func SeedTopic(db *sql.DB, title string) error {
 	}
 
 	if count == 0 {
-		_, err = db.Exec("INSERT INTO topics (title) VALUES (?)", title)
+		_, err = db.Exec("INSERT INTO topics (title, username) VALUES (?, ?)", title, "System")
 		return err
 	}
 

@@ -3,12 +3,14 @@ import { Box, List, ListItem, ListItemText, Typography, Paper, Button, Dialog, D
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link } from 'react-router-dom';
 import { getTopics, createTopic, deleteTopic, type Topic } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const TopicList = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [newTopicTitle, setNewTopicTitle] = useState('');
+  const { user } = useAuth();
 
   const fetchTopics = useCallback(async (query: string = "") => {
     try {
@@ -56,7 +58,7 @@ const TopicList = () => {
       <Paper elevation={3} sx={{ p: 4 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
             <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-            Gossip with Go - Topics
+            CVWO Web Forum - Topics
             </Typography>
             <Button variant="contained" onClick={() => setOpen(true)}>
                 Create Topic
@@ -91,13 +93,20 @@ const TopicList = () => {
                 '&:hover': { backgroundColor: 'action.hover' } 
               }}
               secondaryAction={
+                user === topic.username && (
                 <IconButton edge="end" aria-label="delete" onClick={(e) => handleDeleteTopic(e, topic.id)} color="error">
                   <DeleteIcon />
                 </IconButton>
+                )
               }
             >
               <ListItemText 
                 primary={topic.title} 
+                secondary={
+                  <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary' }}>
+                    Created by {topic.username}
+                  </Typography>
+                }
                 primaryTypographyProps={{ variant: 'h6' }}
               />
             </ListItem>
