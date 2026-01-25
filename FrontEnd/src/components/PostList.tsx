@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation, Link as RouterLink } from 'react-router-dom';
-import { Card, CardContent, Typography, Stack, Box, CardActionArea, TextField, Button, Breadcrumbs, Link } from '@mui/material';
+import { Card, CardContent, Typography, Stack, Box, CardActionArea, TextField, Button, Breadcrumbs, Link, Paper } from '@mui/material';
 import { getPosts, type Post } from '../services/api';
 import CreatePostForm from './CreatePostForm';
 
@@ -40,7 +40,7 @@ const PostList = () => {
   };
 
   return (
-    <Box>
+    <Paper elevation={0} sx={{ p: 4, mt: 4, borderRadius: 2 }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
         <Link component={RouterLink} to="/" color="inherit">Home</Link>
         <Typography color="text.primary">{topicTitle}</Typography>
@@ -97,7 +97,7 @@ const PostList = () => {
           )}
         </Stack>
       )}
-    </Box>
+    </Paper>
   );
 };
 

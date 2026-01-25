@@ -39,7 +39,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <CssBaseline />
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ minHeight: '100vh', bgcolor: '#f5f7fa', display: 'flex', flexDirection: 'column' }}>
           <NavBar />
           <Container maxWidth="xl" sx={{ mt: 4 }}>
             <Routes>

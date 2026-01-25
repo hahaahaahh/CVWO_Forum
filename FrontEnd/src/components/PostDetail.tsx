@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
-import { Card, CardContent, Typography, Box, Button, Stack, TextField, Breadcrumbs, Link } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button, Stack, TextField, Breadcrumbs, Link, Paper } from '@mui/material';
 import CommentSection from './CommentSection';
 import { type Post, deletePost, updatePost } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -53,7 +53,7 @@ const PostDetail = () => {
   }
 
   return (
-    <Box>
+    <Paper elevation={0} sx={{ p: 4, mt: 4, borderRadius: 2 }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
         <Link component={RouterLink} to="/" color="inherit">Home</Link>
         <Link component={RouterLink} to={`/topics/${post.topic_id}`} state={{ title: topicTitle }} color="inherit">
@@ -125,7 +125,7 @@ const PostDetail = () => {
       </Card>
 
       <CommentSection postId={post.id.toString()} />
-    </Box>
+    </Paper>
   );
 };
 

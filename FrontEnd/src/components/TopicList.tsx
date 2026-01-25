@@ -55,7 +55,7 @@ const TopicList = () => {
 
   return (
     <Box>
-      <Paper elevation={3} sx={{ p: 4 }}>
+      <Paper elevation={0} sx={{ p: 4, mt: 4, borderRadius: 2 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
             <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
             CVWO Web Forum - Topics

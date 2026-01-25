@@ -49,7 +49,7 @@ const Login = () => {
 
   return (
     <Container maxWidth="xs" sx={{ mt: 8 }}>
-      <Paper elevation={3} sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Paper elevation={0} sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 2 }}>
         <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
           CVWO Web Forum
         </Typography>
