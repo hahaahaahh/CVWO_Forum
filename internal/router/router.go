@@ -25,7 +25,7 @@ func SetupRouter(db *sql.DB) http.Handler {
 	mux.HandleFunc("POST /signup", h.Signup)
 	mux.HandleFunc("POST /login", h.Login)
 
-	return enableCORS(mux)
+	return mux
 }
 
 func enableCORS(next http.Handler) http.Handler {
