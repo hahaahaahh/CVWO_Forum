@@ -6,11 +6,23 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load .env file if it exists (for local dev)
+	_ = godotenv.Load()
+
 	// Initialize Database
-	db, err := database.InitDB("forum.db")
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		log.Fatal("DATABASE_URL is not set")
+	}
+	fmt.Println("Connecting to Database:", dbURL)
+
+	db, err := database.InitDB(dbURL)
 	if err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}

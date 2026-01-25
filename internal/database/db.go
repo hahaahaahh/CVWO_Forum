@@ -5,21 +5,16 @@ import (
 	"log"
 	"os"
 
-	_ "modernc.org/sqlite"
+	_ "github.com/lib/pq"
 )
 
-func InitDB(filepath string) (*sql.DB, error) {
-	db, err := sql.Open("sqlite", filepath)
+func InitDB(connStr string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, err
 	}
 
 	if err := db.Ping(); err != nil {
-		return nil, err
-	}
-
-	// Enable foreign keys
-	if _, err := db.Exec("PRAGMA foreign_keys = ON;"); err != nil {
 		return nil, err
 	}
 

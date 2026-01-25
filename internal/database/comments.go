@@ -6,7 +6,7 @@ import (
 )
 
 func GetCommentsByPost(db *sql.DB, postID int) ([]models.Comment, error) {
-	query := "SELECT id, body, username, post_id, created_at FROM comments WHERE post_id = ? ORDER BY created_at ASC"
+	query := "SELECT id, body, username, post_id, created_at FROM comments WHERE post_id = $1 ORDER BY created_at ASC"
 	rows, err := db.Query(query, postID)
 	if err != nil {
 		return nil, err
@@ -30,13 +30,9 @@ func GetCommentsByPost(db *sql.DB, postID int) ([]models.Comment, error) {
 }
 
 func CreateComment(db *sql.DB, comment models.Comment) (int64, error) {
-	query := "INSERT INTO comments (body, username, post_id) VALUES (?, ?, ?)"
-	result, err := db.Exec(query, comment.Body, comment.Username, comment.PostID)
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := result.LastInsertId()
+	var id int64
+	query := "INSERT INTO comments (body, username, post_id) VALUES ($1, $2, $3) RETURNING id"
+	err := db.QueryRow(query, comment.Body, comment.Username, comment.PostID).Scan(&id)
 	if err != nil {
 		return 0, err
 	}
@@ -46,7 +42,7 @@ func CreateComment(db *sql.DB, comment models.Comment) (int64, error) {
 
 func GetCommentAuthor(db *sql.DB, id int) (string, error) {
 	var username string
-	query := "SELECT username FROM comments WHERE id = ?"
+	query := "SELECT username FROM comments WHERE id = $1"
 	err := db.QueryRow(query, id).Scan(&username)
 	if err != nil {
 		return "", err
@@ -55,7 +51,7 @@ func GetCommentAuthor(db *sql.DB, id int) (string, error) {
 }
 
 func DeleteComment(db *sql.DB, id int) error {
-	query := "DELETE FROM comments WHERE id = ?"
+	query := "DELETE FROM comments WHERE id = $1"
 	_, err := db.Exec(query, id)
 	return err
 }
