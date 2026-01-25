@@ -15,7 +15,7 @@ const TopicList = () => {
   const fetchTopics = useCallback(async (query: string = "") => {
     try {
       const data = await getTopics(query);
-      setTopics(data);
+      setTopics(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch topics:", error);
     }
@@ -81,7 +81,12 @@ const TopicList = () => {
         </Box>
 
         <List>
-          {topics.map((topic) => (
+          {(!topics || topics.length === 0) ? (
+            <Typography variant="body1" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+                No topics found.
+            </Typography>
+          ) : (
+            topics.map((topic) => (
             <ListItem 
               key={topic.id} 
               component={Link} 
@@ -110,7 +115,7 @@ const TopicList = () => {
                 primaryTypographyProps={{ variant: 'h6' }}
               />
             </ListItem>
-          ))}
+          )))}
         </List>
       </Paper>
 
